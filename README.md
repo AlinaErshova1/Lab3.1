@@ -90,7 +90,7 @@
 
 ### 4. Программа
 
-```
+```java
 import java.io.PrintStream;
 import java.util.Scanner;
 class Check{ //создаю класс, в котором будут удаляться повторяющиеся элементы
