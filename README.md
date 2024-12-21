@@ -91,231 +91,144 @@
 ### 4. Программа
 
 ```java
-import java.io.PrintStream;
 import java.util.Scanner;
-class Check{ //создаю класс, в котором будут удаляться повторяющиеся элементы
-    double []set;
 
-    public Check(double []s){
-        for(int i = 0; i<s.length; i++){
-            for(int j = i+1; j<s.length; j++){//через двойной цикл проверяю есть ли повтор. элементы
-                double []s1 = new double[s.length-1];
-                if(s[i]==s[j]){//если есть, записываю все элементы кроме повтор. в новый список, длина которого меньше на единицу чем длина текущего
-                    for(int k = 0; k<j; k++)
-                        s1[k] = s[k];
-                    for(int k = j; k<s.length-1; k++)
-                        s1[k] = s[k+1];
-                    s = s1;
+class MySet {
+    public static Scanner in = new Scanner(System.in);
+    double[] set = new double[0];
+
+    public static double[] check(double[] set) {
+        double[] m = new double[set.length];
+        int ind = 0;
+        for (int i = 0; i < set.length; i++) {
+            for (int j = i + 1; j < set.length; j++) {
+                if (set[i] != set[j]) {
+                    m[ind] = set[i];
+                    ind++;
                 }
             }
         }
-        //перезаписываю текущий список
-        set = s;
+        return m;
     }
 
-    public Check(MySet s1){
-        double [] m = new double[s1.count()];
-        for(int i = 0; i<s1.count(); i++){
-            m[i] = s1.value(i);
+
+    public boolean in(double x) {
+        int flag = 0;
+        for (int i = 0; i < set.length; i++) {
+            if (set[i] == x)
+                flag++;
         }
-        set = m;
+        return flag == 1;
     }
 
-    public int length(){
-        return this.set.length;
-
-    }
-
-    public double Value(int x){
-        return this.set[x];
-
-    }
-
-    public boolean in(double x){
-        int yes = 0;
-        for (int i = 0; i< set.length; i++)//если элесент есть в массиве, меняю флаг
-            if (x == set[i])
-                yes++;
-        return yes==1;
-    }
-
-    @Override
-    public String toString(){
-        String output = "";
-        if (set.length>0) {
-            output = String.format("%.2f",set[0]) ;
-            for (int i = 1; i < set.length; i++)
-                output += ", " + String.format("%.2f", set[i]) ;
-        }
-        return "{" + output + "}";
-    }
-
-}
-class MySet{
-    public static Scanner in = new Scanner(System.in);
-    double []st = new double[0];
-    Check set = new Check(st);
-
-    //Вспомогательный метод
-    public double value(int x){
-        return set.Value(x);
-
-    }
 
     //Создание множества из чисел, вводимых с клавиатуры
-    public MySet(int n){
-        double [] m = new double[n];
-        for (int i = 0; i<n; i++)
+    public MySet(int n) {
+        double[] m = new double[n];
+        for (int i = 0; i < n; i++)
             m[i] = in.nextInt();
-        set = new Check(m);
+        MySet.check(m);
     }
 
     //создание множества из пустого списка
-    public MySet(){
-        double []st = new double[0];
-        Check set = new Check(st);
+    public MySet() {
+        double[] st = new double[0];
+        MySet.check(st);
     }
 
     //создание мн-ва из массива
-    public MySet(double []m){
-        double []s = new double[m.length];
-        for (int i = 0; i< m.length; i++)
+    public MySet(double[] m) {
+        double[] s = new double[m.length];
+        for (int i = 0; i < m.length; i++)
             s[i] = m[i];
-        set = new Check(s);
+        MySet.check(s);
+        ;
     }
 
     //Добавление элемента
-    public void add(double x){
-        double []s = new double[set.length()+1];//вспомогательны массив, длина которого больше текущего
-        for (int i = 0; i< set.length(); i++)
-            s[i] = set.Value(i); //перезаписываю элементы
-        s[set.length()] = x; //на последнее место ставлю новый элемент
-        set = new Check(s); 
+    public void add(double x) {
+        double[] s = new double[set.length + 1];
+        for (int i = 0; i < set.length; i++)
+            s[i] = set[i];
+        s[set.length] = x;
+        set = MySet.check(s);
+        ;
     }
 
     //Удаление эл-та
-    public void remove(double x){
+    public void remove(double x) {
         int ind = 0;
-        for(int i = 0; i< set.length(); i++)//наход\жу индекс элемента, который необходимо удалить
-            if (set.Value(i) == x)
+        for (int i = 0; i < set.length; i++)
+            if (set[i] == x)
                 ind = i;
-        double []s = new double[set.length()-1];
-        for(int i = 0; i<ind; i++)
-            s[i] = set.Value(i); //перезаписываю все эл. кроме того, который нужно удалить
-        for(int i = ind; i<set.length()-1; i++)
-            s[i] = set.Value(i+1);
-        set = new Check(s);
+        double[] s = new double[set.length - 1];
+        for (int i = 0; i < ind; i++)
+            s[i] = set[i];
+        for (int i = ind; i < set.length - 1; i++)
+            s[i] = set[i + 1];
+        set = MySet.check(s);
+        ;
     }
 
     //Подсчёт количества элементов
-    public int count(){
-        return set.length();
+    public int count() {
+        return set.length;
 
     }
 
-    //Проверка принадлежности элемента
-    public boolean belong(double x){
-        return set.in(x);
-
-    }
 
     //Объединение множеств
-    public MySet Union(MySet s1){
-        Check s2 = new Check(s1); 
-        double []m = new double[s2.length() + set.length()];
-        for(int i = 0; i< s2.length(); i++) {
-            m[i] = s2.Value(i);
+    public double[] union(double[] s1) {
+        double[] s2 = MySet.check(s1);
+        double[] m = new double[s2.length + set.length];
+        for (int i = 0; i < s2.length; i++) {
+            m[i] = s2[i];
         }
-        for (int i = 0 ; i < set.length(); i++) {
-            m[i + s2.length()] = set.Value(i);
+        for (int i = 0; i < set.length; i++) {
+            m[i + s2.length] = set[i];
         }
-        return new MySet(m);
+        return MySet.check(m);
     }
 
-    public MySet Union(Check s2){ 
-        double []m = new double[s2.length() + set.length()];
-        for(int i = 0; i< s2.length(); i++) {
-            m[i] = s2.Value(i);
-        }
-        for (int i = 0 ; i < set.length(); i++) {
-            m[i + s2.length()] = set.Value(i);
-        }
-        return new MySet(m);
-    }
 
     //Пересечение мн-тв
-    public MySet Intersection(MySet s1){
-        Check s2 = new Check(s1);
-        double [] m = new double[0];
-        if (s2.length() < set.length()){
-            for(int i = 0; i< s2.length(); i++) {
-                for(int k = 0; k<set.length(); k++){
-                    if(s2.Value(i)==set.Value(k)){
-                        double[] newu = new double[m.length + 1];
-                        for(int j = 0; j< m.length; j++)
-                          newu[j]= m[j];
-                        newu[m.length] = s2.Value(i);
-                        m = newu;
-                    }
+    public double[] intersection(double[] s1) {
+        double[] s2 = MySet.check(s1);
+        double[] m = new double[0];
+        if (s2.length < set.length) {
+            for (int i = 0; i < s2.length; i++) {
+                if (new MySet(set).in(s2[i])) {
+                    double[] newu = new double[m.length + 1];
+                    for (int j = 0; j < m.length; j++)
+                        newu[j] = m[j];
+                    newu[m.length] = s2[i];
+                    m = newu;
+                }
+            }
+        } else {
+            for (int i = 0; i < set.length; i++) {
+                if (new MySet(s2).in(set[i])) {
+                    double[] newu = new double[m.length + 1];
+                    for (int j = 0; j < m.length; j++)
+                        newu[j] = m[j];
+                    newu[m.length] = set[i];
+                    m = newu;
                 }
             }
         }
-        else{
-            for(int i = 0; i< set.length(); i++) {
-                for(int k = 0; k< s2.length(); k++){
-                    if(set.Value(i)== s2.Value(k)){
-                        double[] newu = new double[m.length + 1];
-                        for(int j = 0; j< m.length; j++)
-                            newu[j]= m[j];
-                        newu[m.length] = set.Value(i);
-                        m = newu;
-                    }
-                }
-            }
-        }
-        return new MySet(m);
+        return m;
     }
 
-    public MySet Intersection(Check s2) {
-        double[]m = new double[0];
-        if (s2.length() < set.length()) {
-            for (int i = 0; i < s2.length(); i++) {
-                for (int k = 0; k < set.length(); k++) { //если элемент есть и в текущем, и р переданном множестве, добавляем в новый список
-                    if (s2.Value(i) == set.Value(k)) {
-                        double[] newu = new double[m.length + 1];
-                        for (int j = 0; j < m.length; j++)
-                            newu[j] = m[j];
-                        newu[m.length] = s2.Value(i);
-                        m = newu;
-                    }
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < set.length(); i++) {
-                for (int k = 0; k < s2.length(); k++) {
-                    if (set.Value(i) == s2.Value(k)) {
-                        double[] newu = new double[m.length + 1];
-                        for (int j = 0; j < m.length; j++)
-                            newu[j] = m[j];
-                        newu[m.length] = set.Value(i);
-                        m = newu;
-                    }
-                }
-            }
-        }
-        return new MySet(m);
-    }
 
     //симметрическая разность
-    public MySet SymmetricDifference(MySet s1){
-        MySet inter = s1.Intersection(set);
-        MySet un = s1.Union(set);
-        double []m = new double[un.count() - inter.count()];
+    public MySet SymmetricDifference(MySet s1) {
+        double[] inter = s1.intersection(set);
+        double[] un = s1.union(set);
+        double[] m = new double[un.length - inter.length];
         int ind = 0;
-        for (int i = 0; i<un.count(); i++){
-            if (!inter.belong(un.value(i))){ //если элеменат нет в пересечении добавл. в список
-                m[ind] = un.value(i);
+        for (int i = 0; i < un.length; i++) {
+            if (!new MySet(inter).in(un[i])) {
+                m[ind] = un[i];
                 ind++;
             }
         }
@@ -323,56 +236,57 @@ class MySet{
     }
 
     //разность
-    public void Difference(MySet s1){
-        MySet inter = s1.Intersection(set);
-        double []m = new double[set.length() - inter.count()];
+    public void Difference(MySet s1) {
+        double[] inter = s1.intersection(set);
+        double[] m = new double[set.length - inter.length];
         int ind = 0;
-        for(int i = 0; i<set.length(); i++){
-            if (!inter.belong(set.Value(i))){
-                m[ind] = set.Value(i);
+        for (int i = 0; i < set.length; i++) {
+            if (!new MySet(inter).in(set[i])) {
+                m[ind] = set[i];
                 ind++;
             }
         }
-        set = new Check(m);
+        set = MySet.check(m);
+        ;
     }
 
     //сравнение
-    public boolean equalQ(MySet s1){
-        Check s2 = new Check(s1);
-        if (s2.length() != set.length())
+    public boolean equalQ(double[] s1) {
+        double[] s2 = MySet.check(s1);
+        ;
+        if (s2.length != set.length)
             return false;
-        else{
+        else {
             int c = 0;
-            for (int i = 0; i<set.length(); i++) {
-                if (s1.belong(set.Value(i))) {
-                    c++; //если элемент есть в другом множестве, увеличиваем счетчик
+            for (int i = 0; i < set.length; i++) {
+                if (new MySet(s1).in(set[i])) {
+                    c++;
                 }
             }
-            return c == set.length();
+            return c == set.length;
         }
     }
 
     //проверка вложенности
-    public String nested(MySet s1){
-        Check s2 = new Check(s1);
-        if (s2.length()>set.length()){
+    public String nested(double[] s1) {
+        double[] s2 = MySet.check(s1);
+        if (s2.length > set.length) {
             int c = 0;
-            for (int i = 0; i < set.length(); i++){
-                if (s2.in(set.Value(i)))
+            for (int i = 0; i < set.length; i++) {
+                if (new MySet(s2).in(set[i]))
                     c++;
             }
-            if (c == set.length())
+            if (c == set.length)
                 return "Текущее мн-во содержится в переданном";
             else
                 return "Ни одно множество не содержится в другом";
-        }
-        else{
+        } else {
             int c = 0;
-            for (int i = 0; i < s2.length(); i++){
-                if (set.in(s2.Value(i)))
+            for (int i = 0; i < s2.length; i++) {
+                if (new MySet(set).in(s2[i]))
                     c++;
             }
-            if (c == s2.length())
+            if (c == s2.length)
                 return "Переданное мн-во содержится в текущем";
             else
                 return "Ни одно множество не содержится в другом";
@@ -380,12 +294,12 @@ class MySet{
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         String output = "";
-        if (set.length()>0) {
-            output = String.format("%.2f",set.Value(0)) ;
-            for (int i = 1; i < set.length(); i++)
-                output += ", " + String.format("%.2f", set.Value(i)) ;
+        if (set.length > 0) {
+            output = String.format("%.2f", set[0]);
+            for (int i = 1; i < set.length; i++)
+                output += ", " + String.format("%.2f", set[i]);
         }
         return "{" + output + "}";
     }
